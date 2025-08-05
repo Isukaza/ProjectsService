@@ -15,6 +15,12 @@ public class ProjectRepository(IMongoDatabase database) : IProjectRepository
     public async Task<ProjectDocument> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+    public async Task<IEnumerable<ProjectDocument>> GetByUserIdsAsync(IEnumerable<int> userIds)
+    {
+        var filter = Builders<ProjectDocument>.Filter.In(p => p.UserId, userIds);
+        return await _collection.Find(filter).ToListAsync();
+    }
+
     public async Task<ProjectDocument> CreateAsync(ProjectDocument project)
     {
         await _collection.InsertOneAsync(project);
