@@ -1,23 +1,24 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["ProjectsService/ProjectsService.csproj", "ProjectsService/"]
+
+COPY ProjectsService/ProjectsService.csproj ProjectsService/
+COPY DAL/DAL.csproj DAL/
 RUN dotnet restore "ProjectsService/ProjectsService.csproj"
+
 COPY . .
-WORKDIR "/src/ProjectsService"
-RUN dotnet build "./ProjectsService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /src/ProjectsService
+RUN dotnet publish "ProjectsService.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ProjectsService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+COPY --from=build /app/publish .
+
+ENV DOTNET_RUNNING_IN_CONTAINER=true \
+    ASPNETCORE_URLS="https://+:9443;http://+:9080" \
+    ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cert.pfx
+
+EXPOSE 9080
+EXPOSE 9443
+
 ENTRYPOINT ["dotnet", "ProjectsService.dll"]
