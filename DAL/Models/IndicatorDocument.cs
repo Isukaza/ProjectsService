@@ -1,8 +1,8 @@
 using DAL.Models.Enums;
 
-namespace ProjectsService.Models.Requests;
+namespace DAL.Models;
 
-public class Indicator
+public class IndicatorDocument
 {
     public IndicatorName Name { get; set; }
     public string Parameters { get; set; }

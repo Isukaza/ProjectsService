@@ -1,11 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using ProjectsService.Managers.Interfaces;
+using ProjectsService.Models.Responses;
 
 namespace ProjectsService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectsController : ControllerBase
+public class ProjectsController(IProjectManager manager) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAll() => Ok("all");
+    public async Task<ActionResult<IEnumerable<Project>>> GetAll()
+    {
+        var projects = await manager.GetAllAsync();
+        return Ok(projects);
+    }
 }

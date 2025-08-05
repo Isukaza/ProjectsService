@@ -1,8 +1,10 @@
+using DAL.Models.Enums;
+
 namespace ProjectsService.Models.Requests;
 
 public class Chart
 {
-    public string Symbol { get; set; }
-    public string Timeframe { get; set; }
+    public Symbol Symbol { get; set; }
+    public Timeframe Timeframe { get; set; }
     public List<Indicator> Indicators { get; set; } = [];
 }
