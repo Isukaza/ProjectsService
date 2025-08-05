@@ -24,7 +24,10 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -38,9 +41,16 @@ BsonSerializer.RegisterSerializer(new EnumSerializer<Timeframe>(MongoDB.Bson.Bso
 
 builder.Services.AddSingleton(mongoDatabase);
 
+builder.Services.AddScoped<IAnalystManager, AnalystManager>();
 builder.Services.AddScoped<IProjectManager, ProjectManager>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+builder.Services.AddHttpClient<IAnalystManager, AnalystManager>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:8443/");
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
