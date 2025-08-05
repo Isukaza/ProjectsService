@@ -1,0 +1,29 @@
+﻿# Ignore version control
+.git
+.gitignore
+
+# Ignore development environment files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.jfm
+*.dbmdl
+.project
+.settings
+.toolstarget
+
+# Ignore build output
+bin/
+obj/
+**/bin/
+**/obj/
+artifacts/
+
+# Ignore environment files
+*.env
+
+# Don't copy markdown/license docs into container (optional)
+README.md
+LICENSE
