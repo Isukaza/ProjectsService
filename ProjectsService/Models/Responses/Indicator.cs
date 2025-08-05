@@ -1,7 +1,9 @@
+using DAL.Models.Enums;
+
 namespace ProjectsService.Models.Responses;
 
 public class Indicator
 {
-    public string Name { get; set; }
+    public IndicatorName Name { get; set; }
     public string Parameters { get; set; }
 }
