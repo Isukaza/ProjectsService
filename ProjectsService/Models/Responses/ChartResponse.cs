@@ -2,9 +2,9 @@ using DAL.Models.Enums;
 
 namespace ProjectsService.Models.Responses;
 
-public class Chart
+public class ChartResponse
 {
     public Symbol Symbol { get; set; }
     public Timeframe Timeframe { get; set; }
-    public List<Indicator> Indicators { get; set; } = [];
+    public List<IndicatorResponse> Indicators { get; set; } = [];
 }
