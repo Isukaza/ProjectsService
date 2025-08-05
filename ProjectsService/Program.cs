@@ -24,10 +24,7 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,10 +43,15 @@ builder.Services.AddScoped<IProjectManager, ProjectManager>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+var userServiceUrl = builder.Configuration["USER_SERVICE_URL"] ?? "https://localhost:8443/";
 builder.Services.AddHttpClient<IAnalystManager, AnalystManager>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:8443/");
-});
+    {
+        client.BaseAddress = new Uri(userServiceUrl);
+    })
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
 
 var app = builder.Build();
 
